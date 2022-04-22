@@ -1,0 +1,32 @@
+translate:
+  <-: '='
+  '=': ==
+  AND: and
+  DISPLAY: print
+  ELSE: else
+  IF: if
+  INPUT: input
+  LENGTH: len
+  MOD: '%'
+  NOT: not
+  OR: or
+  PROCEDURE: def
+  RANDOM: random.randint
+  RETURN: return
+  "\u2260": '!='
+  "\u2264": <=
+  "\u2265": '>='
+unchanged:
+- +
+- '-'
+- '*'
+- /
+- '>'
+- <
+- (
+- )
+- '['
+- ']'
+- ','
+- '"'
+- ''''

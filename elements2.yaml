@@ -1,0 +1,12 @@
+functions:
+  DISPLAY: print
+  RANDOM: random
+keywords:
+  'FALSE': false
+  'TRUE': true
+operators:
+  '*': multiply
+  +: add
+  '-': subtract
+  /: divide
+  <-: assign
