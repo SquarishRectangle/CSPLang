@@ -1,0 +1,8 @@
+
+var <- 1 + 1
+
+IF (var = 2)
+{
+    DISPLAY(var)
+    DISPLAY("Hello world!")
+}

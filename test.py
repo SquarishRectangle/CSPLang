@@ -7,16 +7,16 @@ unchanged = [
     '(', ')',
     '[', ']',
     ',', 
-    '"', "'",
+    '"', "'"
 ]
 
 translate = {
-    "<-": "=",
+    "\u2190": "=",
     "=": "==",
     "DISPLAY": "print",
     "INPUT": "input",
     "MOD": "%",
-    "RANDOM": "random.randint",
+    "RANDOM": "randint",
     "\u2260": "!=",
     "\u2264": "<=",
     "\u2265": ">=",
@@ -30,9 +30,17 @@ translate = {
     "RETURN": "return"   
 }
 
+uncommons = {
+    "<-": "\u2190",
+    "!=": "\u2260",
+    "<=": "\u2264",
+    ">=": "\u2265"
+}
+
 elements = {
     "unchanged": unchanged,
-    "translate": translate
+    "translate": translate,
+    "uncommons": uncommons
 }
 
 with open("elements.yaml", 'w') as file:

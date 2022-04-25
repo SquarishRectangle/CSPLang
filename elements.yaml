@@ -1,5 +1,4 @@
 translate:
-  <-: '='
   '=': ==
   AND: and
   DISPLAY: print
@@ -11,8 +10,9 @@ translate:
   NOT: not
   OR: or
   PROCEDURE: def
-  RANDOM: random.randint
+  RANDOM: randint
   RETURN: return
+  "\u2190": '='
   "\u2260": '!='
   "\u2264": <=
   "\u2265": '>='
@@ -30,3 +30,8 @@ unchanged:
 - ','
 - '"'
 - ''''
+uncommons:
+  '!=': "\u2260"
+  <-: "\u2190"
+  <=: "\u2264"
+  '>=': "\u2265"

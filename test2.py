@@ -1,29 +1,23 @@
-import yaml, random
+lines = [
+    ["never"],
+    ["gonna"],
+    ["give"],
+    ["you"],
+    ["up"]
+]
+starts = [
+    "never",
+    "gonna",
+    "let",
+    "you",
+    "down"
+]
 
 
-operators = {
-    "<-": "assign",
-    "+": "add",
-    "-": "subtract",
-    "*": "multiply",
-    "/": "divide"
-}
+import re
 
-keywords = {
-    "TRUE": True,
-    "FALSE": False
-}
+elements = "hello yall hi_the05re hi_there1 _ _hello hello_world".split()
 
-functions = {
-    "DISPLAY": "print",
-    "RANDOM": "random"
-}
-
-elements = {
-    "operators": operators,
-    "keywords": keywords,
-    "functions": functions
-}
-
-with open("elements.yaml", 'w') as file:
-    yaml.dump(elements, file, Dumper=yaml.Dumper)
+for element in elements:
+    if not re.match("^[a-zA-Z][a-zA-Z0-9_]*$", element):
+        print(f"Invalid variable name: {element}")
