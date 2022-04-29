@@ -1,4 +1,6 @@
+from lib2to3.pytree import convert
 import sys, yaml, re
+from numpy import var
 from typing import Union
 
 variables = []
@@ -77,7 +79,10 @@ def checkInvalid(line:list) -> Union[str, None]:
 
 def checkEnclosed(condition:list) -> None:
     numparen = 0
-    for e in condition:
+    if condition[-1] != ')':
+        print("Condition must be enclosed in parentheses")
+        sys.exit(1)
+    for e in condition[:-1]:
         if e == "(":
             numparen += 1
         elif e == ")":
@@ -87,7 +92,19 @@ def checkEnclosed(condition:list) -> None:
             sys.exit(1)
 
 
+def seperateParams(params:list) -> list[list]:
+    commas = [params.index(e) for e in params if e == ',']
+    commaPairs = zip(commas[:-1], commas[1:])
+    rParams = [params[:commas[0]], *[params[start+1:end] for start, end in commaPairs], params[commas[-1]+1:]]
+    return rParams
+
+
 def convertSyntax(line:list) -> list:
+    global variables
+
+    if not line:
+        return line
+
     if line[0] == "IF":
         if len(line) < 4:
             print("Invalid IF statement")
@@ -103,7 +120,91 @@ def convertSyntax(line:list) -> list:
         
         line.append(':')
         
-    elif 
+    elif line[0] == "REPEAT":
+        if line[1] == "UNTIL":
+            if len(line) < 5:
+                print("Invalid REPEAT statement")
+                sys.exit(1)
+            
+            checkEnclosed(line[2:])
+            line[:2] = "while not"
+            line.append(':')
+        
+        elif line[-1] == "TIMES":
+            if len(line) < 3:
+                print("Invalid REPEAT statement")
+                sys.exit(1)
+
+            checkEnclosed(line[1:-1])
+            line = ["for _ in range(", *line[1:-1], ')']
+            line.append(':')
+        
+        else:
+            print("Invalid REPEAT statement")
+            sys.exit(1)
+
+    elif line[0] == "INSERT":
+        if len(line) < 8:
+            print("Invalid INSERT statement")
+            sys.exit(1)
+            
+        checkEnclosed(line[1:])
+        params = seperateParams(line[2:-1])
+        if len(params) != 3:
+            print("Invalid INSERT statement")
+            sys.exit(1)
+        
+        line = [f"{params[0]}.insert({params[1]}, {params[2]})"]
+
+    elif line[0] == "APPEND":
+        if len(line) < 6:
+            print("Invalid APPEND statement")
+            sys.exit(1)
+        
+        checkEnclosed(line[1:])
+        params = seperateParams(line[2:-1])
+        if len(params) != 2:
+            print("Invalid APPEND statement")
+            sys.exit(1)
+
+        line = [f"{params[0]}.append({params[1]})"]
+        
+    elif line[0] == "REMOVE":
+        if len(line) < 6:
+            print("Invalid REMOVE statement")
+            sys.exit(1)
+        
+        checkEnclosed(line[1:])
+        params = seperateParams(line[2:-1])
+        if len(params) != 2:
+            print("Invalid REMOVE statement")
+            sys.exit(1)
+
+        line = [f"{params[0]}.pop({params[1]})"]
+        
+    elif line[0] == "FOR":
+        if len(line) < 5: 
+            print("Invalid FOR EACH statement")
+            sys.exit(1)
+        if (line[1], line[3]) != ("EACH", "IN"):
+            print("Invalid FOR EACH statement")
+            sys.exit(1)
+        
+        line.pop(1)
+        line.append(':')
+
+    elif line[0] == "PROCEDURE":
+        if len(line) < 4:
+            print("Invalid PROCEDURE definition")
+            sys.exit(1)
+
+        variables.append(line[1])
+        line.append(':')
+
+    elif line[0] == "RETURN":
+        checkEnclosed(line[1:])
+
+    return line
 
 
 def parseLine(line:str) -> list:
@@ -114,14 +215,14 @@ def parseLine(line:str) -> list:
     #combine strings into one element
     line = combineStrings(line)
 
-
     #check for invalid elements
     error = checkInvalid(line)
     if error:
         print(error)
         sys.exit(1)
 
-    #
+    #convert syntax
+    line = convertSyntax(line)
     
     #translate elements
     line = [elements["translate"][e] if e in elements["translate"] else e for e in line]
